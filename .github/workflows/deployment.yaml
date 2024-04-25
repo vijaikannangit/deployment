@@ -6,7 +6,8 @@ on:
       env:
         description: 'Environment to deploy to'
         required: true
-        options: ${{ secrets.REPOSITORY_ENVIRONMENTS }}
+        type: environment
+        # options: ${{ secrets.REPOSITORY_ENVIRONMENTS }}
 
 jobs:
   deploy:
