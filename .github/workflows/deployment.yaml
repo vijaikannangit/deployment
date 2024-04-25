@@ -2,88 +2,59 @@ name: Deployment Workflow
 
 on:
   workflow_dispatch:
-    inputs:
-      env:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'dev'
-        options: ['dev', 'test', 'qa', 'prod']
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        env: [${{ github.event.inputs.env }}]
+    if: ${{ github.event.repository.environment == 'dev' || github.event.repository.environment == 'test' || github.event.repository.environment == 'qa' || github.event.repository.environment == 'prod' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Deploy to ${{ matrix.env }}
-        if: ${{ github.event.inputs.env == matrix.env }}
+      - name: Deploy
         run: |
-          echo "Deploying to ${{ matrix.env }}"
-      - name: Execute additional steps
-        if: ${{ github.event.inputs.env == matrix.env && matrix.env != 'dev' }}
-        run: |
-          echo "Executing additional steps for ${{ matrix.env }}"
+          echo "Deploying..."
 
   test:
     name: Test
     runs-on: ubuntu-latest
-    needs: deploy
-    strategy:
-      matrix:
-        env: [${{ github.event.inputs.env }}]
+    if: ${{ github.event.repository.environment == 'test' || github.event.repository.environment == 'qa' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Run tests on ${{ matrix.env }}
-        if: ${{ github.event.inputs.env == matrix.env }}
+      - name: Run tests
         run: |
-          echo "Running tests on ${{ matrix.env }}"
+          echo "Running tests..."
 
   perf-test:
     name: Performance Test
     runs-on: ubuntu-latest
-    needs: test
-    strategy:
-      matrix:
-        env: [qa]
+    if: ${{ github.event.repository.environment == 'qa' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Run performance tests on ${{ matrix.env }}
-        if: ${{ github.event.inputs.env == matrix.env }}
+      - name: Run performance tests
         run: |
-          echo "Running performance tests on ${{ matrix.env }}"
+          echo "Running performance tests..."
 
   api-test:
     name: API Test
     runs-on: ubuntu-latest
-    needs: test
-    strategy:
-      matrix:
-        env: [qa]
+    if: ${{ github.event.repository.environment == 'qa' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Run API tests on ${{ matrix.env }}
-        if: ${{ github.event.inputs.env == matrix.env }}
+      - name: Run API tests
         run: |
-          echo "Running API tests on ${{ matrix.env }}"
+          echo "Running API tests..."
 
   post-checks:
     name: Post-Checks
     runs-on: ubuntu-latest
-    needs: deploy
-    strategy:
-      matrix:
-        env: [prod]
+    if: ${{ github.event.repository.environment == 'prod' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Run post-checks on ${{ matrix.env }}
-        if: ${{ github.event.inputs.env == matrix.env }}
+      - name: Run post-checks
         run: |
-          echo "Running post-checks on ${{ matrix.env }}"
+          echo "Running post-checks..."
