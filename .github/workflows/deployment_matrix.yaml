@@ -1,0 +1,80 @@
+name: Deployment Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Environment to deploy to'
+        required: true
+        type: environment
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [dev, test, qa, prod]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Deploy
+        if: ${{ matrix.env == github.event.inputs.env }}
+        run: |
+          echo "Executing Deploying..."
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [test, qa]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run tests
+        if: ${{ matrix.env == github.event.inputs.env }}
+        run: |
+          echo "Executing tests..."
+
+  perf-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [qa]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run performance tests
+        if: ${{ matrix.env == github.event.inputs.env }}
+        run: |
+          echo "Executing performance tests..."
+
+  api-test:
+    name: API Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [qa]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run API tests
+        if: ${{ matrix.env == github.event.inputs.env }}
+        run: |
+          echo "Executing API tests..."
+
+  post-checks:
+    name: Post-Checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [prod]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run post-checks
+        if: ${{ matrix.env == github.event.inputs.env }}
+        run: |
+          echo "Executing post-checks..."
