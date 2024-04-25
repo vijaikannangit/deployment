@@ -7,7 +7,6 @@ on:
         description: 'Environment to deploy to'
         required: true
         type: environment
-        # options: ${{ secrets.REPOSITORY_ENVIRONMENTS }}
 
 jobs:
   deploy:
@@ -19,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Deploy
         run: |
-          echo "Deploying..."
+          echo "Executing Deploying..."
 
   test:
     name: Test
@@ -30,7 +29,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run tests
         run: |
-          echo "Running tests..."
+          echo "Executing tests..."
 
   perf-test:
     name: Performance Test
@@ -41,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run performance tests
         run: |
-          echo "Running performance tests..."
+          echo "Executing performance tests..."
 
   api-test:
     name: API Test
@@ -52,7 +51,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run API tests
         run: |
-          echo "Running API tests..."
+          echo "Executing API tests..."
 
   post-checks:
     name: Post-Checks
@@ -63,4 +62,4 @@ jobs:
         uses: actions/checkout@v2
       - name: Run post-checks
         run: |
-          echo "Running post-checks..."
+          echo "Executing post-checks..."
