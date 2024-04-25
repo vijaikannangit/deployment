@@ -1,4 +1,4 @@
-name: Deployment Workflow with matrix
+name: Deployment Workflow
 
 on:
   workflow_dispatch:
@@ -17,9 +17,9 @@ jobs:
         env: [dev, test, qa, prod]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Deploy
-        # if: ${{ matrix.env == github.event.inputs.env }}
+        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
           echo "Executing Deploying..."
 
@@ -31,9 +31,9 @@ jobs:
         env: [test, qa]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run tests
-        # if: ${{ matrix.env == github.event.inputs.env }}
+        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
           echo "Executing tests..."
 
@@ -45,9 +45,9 @@ jobs:
         env: [qa]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run performance tests
-        # if: ${{ matrix.env == github.event.inputs.env }}
+        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
           echo "Executing performance tests..."
 
@@ -59,9 +59,9 @@ jobs:
         env: [qa]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run API tests
-        # if: ${{ matrix.env == github.event.inputs.env }}
+        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
           echo "Executing API tests..."
 
@@ -73,8 +73,8 @@ jobs:
         env: [prod]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run post-checks
-        # if: ${{ matrix.env == github.event.inputs.env }}
+        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
           echo "Executing post-checks..."
