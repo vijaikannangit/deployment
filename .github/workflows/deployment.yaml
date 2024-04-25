@@ -20,10 +20,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Deploy to ${{ matrix.env }}
+        if: ${{ github.event.inputs.env == matrix.env }}
         run: |
           echo "Deploying to ${{ matrix.env }}"
       - name: Execute additional steps
-        if: ${{ matrix.env == 'test' || matrix.env == 'qa' || matrix.env == 'prod' }}
+        if: ${{ github.event.inputs.env == matrix.env && matrix.env != 'dev' }}
         run: |
           echo "Executing additional steps for ${{ matrix.env }}"
 
@@ -38,6 +39,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Run tests on ${{ matrix.env }}
+        if: ${{ github.event.inputs.env == matrix.env }}
         run: |
           echo "Running tests on ${{ matrix.env }}"
 
@@ -47,12 +49,12 @@ jobs:
     needs: test
     strategy:
       matrix:
-        env: [${{ github.event.inputs.env }}]
+        env: [qa]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Run performance tests on ${{ matrix.env }}
-        if: ${{ matrix.env == 'qa' }}
+        if: ${{ github.event.inputs.env == matrix.env }}
         run: |
           echo "Running performance tests on ${{ matrix.env }}"
 
@@ -62,12 +64,12 @@ jobs:
     needs: test
     strategy:
       matrix:
-        env: [${{ github.event.inputs.env }}]
+        env: [qa]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Run API tests on ${{ matrix.env }}
-        if: ${{ matrix.env == 'qa' }}
+        if: ${{ github.event.inputs.env == matrix.env }}
         run: |
           echo "Running API tests on ${{ matrix.env }}"
 
@@ -77,11 +79,11 @@ jobs:
     needs: deploy
     strategy:
       matrix:
-        env: [${{ github.event.inputs.env }}]
+        env: [prod]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Run post-checks on ${{ matrix.env }}
-        if: ${{ matrix.env == 'prod' }}
+        if: ${{ github.event.inputs.env == matrix.env }}
         run: |
           echo "Running post-checks on ${{ matrix.env }}"
