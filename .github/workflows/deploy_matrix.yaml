@@ -28,14 +28,17 @@ jobs:
             let tasks;
             switch (env) {
               case 'dev':
-                tasks = ['deploy', 'test'];
+                tasks = ['deploy'];
                 break;
               case 'qa':
-                tasks = ['deploy', 'test', 'load-test'];
+                tasks = ['deploy', 'test', 'perf-test', 'api-test'];
                 break;
               case 'prod':
-                tasks = ['check-ticket', 'deploy'];
+                tasks = ['deploy','post-checks'];
                 break;
+                case 'test':
+                    tasks = ['deploy', 'test'];
+                    break;    
               default:
                 tasks = ['deploy', 'test'];
             }
