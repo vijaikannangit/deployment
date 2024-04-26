@@ -65,4 +65,4 @@ jobs:
       - name: Run post-checks
         run: |
           echo "Executing post-checks..."
-          echo "Deploying with secret: ${{ secrets.DEPLOY_SECRET }}  
+          echo "Deploying with secret: $DEPLOY_SECRET
