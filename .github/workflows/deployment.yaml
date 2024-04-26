@@ -55,7 +55,9 @@ jobs:
 
   post-checks:
     name: Post-Checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   
+    env:
+      DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}     
     if: ${{ github.event.inputs.env == 'prod' }}
     steps:
       - name: Checkout repository
@@ -63,3 +65,4 @@ jobs:
       - name: Run post-checks
         run: |
           echo "Executing post-checks..."
+          echo "Deploying with secret: $DEPLOY_SECRET"
