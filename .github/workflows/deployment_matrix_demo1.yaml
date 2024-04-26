@@ -1,4 +1,4 @@
-name: Deployment Workflow with matrix
+name: Deployment Workflow with matrix demo1
 
 on:
   workflow_dispatch:
@@ -6,75 +6,74 @@ on:
       env:
         description: 'Environment to deploy to'
         required: true
-        type: environment
+        options: ['dev', 'test', 'qa', 'prod']
 
 jobs:
   deploy:
-    name: Deploy    
+    name: Deploy
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [dev, test, qa, prod]
+        env: [${{ github.event.inputs.env }}]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Deploy
-        if: ${{ matrix.env == github.event.inputs.env }}
         run: |
-          echo "Executing Deploying..."
+          echo "Deploying..."
 
   test:
     name: Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [test, qa]
+        env: [${{ github.event.inputs.env }}]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Run tests
-        if: ${{ matrix.env == github.event.inputs.env }}
+        if: startsWith(matrix.env, 'test') || startsWith(matrix.env, 'qa')
         run: |
-          echo "Executing tests..."
+          echo "Running tests..."
 
   perf-test:
     name: Performance Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [qa]
+        env: [${{ github.event.inputs.env }}]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Run performance tests
-        if: ${{ matrix.env == github.event.inputs.env }}
+        if: startsWith(matrix.env, 'qa')
         run: |
-          echo "Executing performance tests..."
+          echo "Running performance tests..."
 
   api-test:
     name: API Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [qa]
+        env: [${{ github.event.inputs.env }}]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Run API tests
-        if: ${{ matrix.env == github.event.inputs.env }}
+        if: startsWith(matrix.env, 'qa')
         run: |
-          echo "Executing API tests..."
+          echo "Running API tests..."
 
   post-checks:
     name: Post-Checks
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [prod]
+        env: [${{ github.event.inputs.env }}]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Run post-checks
-        if: ${{ matrix.env == github.event.inputs.env }}
+        if: startsWith(matrix.env, 'prod')
         run: |
-          echo "Executing post-checks..."
+          echo "Running post-checks..."

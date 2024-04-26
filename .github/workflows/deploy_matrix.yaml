@@ -1,0 +1,52 @@
+name: Deploy with matrix
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: environment
+        description: 'Environment to deploy to'
+        required: true
+        # options:
+        # - dev
+        # - qa
+        # - prod
+jobs:
+  get-tasks:
+    name: set tasks for ${{ github.event.inputs.env }}
+    runs-on: ubuntu-latest
+    outputs:
+      tasks: ${{ steps.set-tasks.outputs.tasks }}
+    steps:
+      - uses: actions/github-script@v7
+        id: set-tasks
+        with:
+          result-encoding: string
+          retries: 3
+          script: |
+            const env = context.payload.inputs.env;
+            console.log(`env: ${env}`)
+            let tasks;
+            switch (env) {
+              case 'dev':
+                tasks = ['deploy', 'test'];
+                break;
+              case 'qa':
+                tasks = ['deploy', 'test', 'load-test'];
+                break;
+              case 'prod':
+                tasks = ['check-ticket', 'deploy'];
+                break;
+              default:
+                tasks = ['deploy', 'test'];
+            }
+            core.setOutput('tasks', JSON.stringify(tasks))
+  tasks:
+    name: ${{ matrix.task }}
+    needs: [get-tasks]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: ${{ fromJson(needs.get-tasks.outputs.tasks) }}  
+    steps:
+      - name: Use matrix
+        run: echo "Execute ${{ matrix.task }}"
