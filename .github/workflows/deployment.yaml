@@ -21,7 +21,8 @@ jobs:
       - name: Deploy
         run: |
           echo "Executing Deploy..."
-          echo "Deployed with secret: $DEPLOY_SECRET"          
+          echo "Deployed with secret: $DEPLOY_SECRET"
+          echo "REGION_ID: ${{ env.REGION_ID }}"
 
   test:
     name: Test
@@ -69,4 +70,3 @@ jobs:
         run: |
           echo "Executing post-checks..."
           echo "Deployed with secret: $DEPLOY_SECRET"
-          echo ${{secrets.DEPLOY_SECRET}} | sed 's/./& /g'
